@@ -36,14 +36,46 @@ DWTS_data_clean[factor_cols] <- lapply(DWTS_data_clean[factor_cols], function(x)
   return(x)
 })
 
-# Remove columns where all values are NA
-DWTS_data_clean <- DWTS_data_clean[, colSums(!is.na(DWTS_data_clean)) > 0]
+# Exclude the judge scores first
+score_cols <- grep("week.*_judge.*_score", names(DWTS_data_clean), value = TRUE)
+report_cols <- setdiff(names(DWTS_data_clean), score_cols)
+DWTS_report_data <- DWTS_data_clean[, report_cols]
 
-# data visualization for DWTS_data_clean
-DWTS_data_text <- capture.output(summary(DWTS_data_clean))
-DWTS_data_grob <- grid.text(paste(DWTS_data_text, collapse = "\n"), x = 0.05, y = 0.95, just = "left")
-png("DWTS_data_output.png", width = 800, height = 400, res = 150)
-grid.draw(DWTS_data_grob)
+# Identify factor/character vs numeric/integer
+factor_cols <- names(DWTS_report_data)[sapply(DWTS_report_data, is.factor) | sapply(DWTS_report_data, is.character)]
+numeric_cols <- names(DWTS_report_data)[sapply(DWTS_report_data, is.numeric) | sapply(DWTS_report_data, is.integer)]
+
+# Summarize factor/character columns
+factor_summary <- data.frame(
+  Type = sapply(DWTS_report_data[factor_cols], class),
+  Unique = sapply(DWTS_report_data[factor_cols], function(x) length(unique(x))),
+  Most_Common = sapply(DWTS_report_data[factor_cols], function(x) {
+    names(sort(table(x), decreasing = TRUE))[1]
+  }),
+  stringsAsFactors = FALSE
+)
+
+# Summarize integer columnds
+numeric_summary <- data.frame(
+  Type = sapply(DWTS_report_data[numeric_cols], class),
+  Unique = sapply(DWTS_report_data[numeric_cols], function(x) length(unique(x))),
+  Min = sapply(DWTS_report_data[numeric_cols], min, na.rm = TRUE),
+  Max = sapply(DWTS_report_data[numeric_cols], max, na.rm = TRUE),
+  Mean = round(sapply(DWTS_report_data[numeric_cols], mean, na.rm = TRUE), 2),
+  Median = round(sapply(DWTS_report_data[numeric_cols], median, na.rm = TRUE), 2),
+  stringsAsFactors = FALSE
+)
+
+# Factor summary PNG
+factor_grob <- tableGrob(factor_summary)
+png("DWTS_factor_summary.png", width = 1200, height = 800, res = 150)
+grid.draw(factor_grob)
+dev.off()
+
+# Numeric summary PNG
+numeric_grob <- tableGrob(numeric_summary)
+png("DWTS_numeric_summary.png", width = 1200, height = 800, res = 150)
+grid.draw(numeric_grob)
 dev.off()
 
 ```
@@ -63,7 +95,6 @@ DWTS_data_clean$season<- factor(DWTS_data_clean$season)
 DWTS_data_clean$results <- factor(DWTS_data_clean$results)
 DWTS_data_clean$placement <- factor(DWTS_data_clean$placement)
 
-score_cols <- grep("week.*judge.*_score", names(DWTS_data), value = TRUE)
 DWTS_data[score_cols] <- lapply(DWTS_data[score_cols], as.factor)
 
 ```
