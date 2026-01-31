@@ -1,0 +1,57 @@
+---
+title: "10_DataCleaning.Rmd"
+author: "Dana Van"
+date: '2026-02-02'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+# Installing the dataset
+```{r}
+
+DWTS_data <- read.csv("2026_MCM_Problem_C_Data.csv")
+```
+
+
+# Eliminating missing observations
+```{r}
+
+airport_fare_clean <- airport_fare[apply(is.na(airport_fare), MARGIN = 1, sum) == 0, ]
+national_fare_clean <- national_fare[apply(is.na(national_fare), MARGIN = 1, sum) == 0, ]
+
+# data visualization for airport_fare_clean
+airport_text <- capture.output(summary(airport_fare_clean))
+airport_grob <- grid.text(paste(airport_text, collapse = "\n"), x = 0.05, y = 0.95, just = "left")
+png("airport_output.png", width = 800, height = 400, res = 150)
+grid.draw(airport_grob)
+dev.off()
+
+# data visualization for national_fare_clean
+national_text <- capture.output(summary(national_fare_clean))
+national_grob <- grid.text(paste(national_text, collapse = "\n"), x = 0.05, y = 0.95, just = "left")
+png("national_output.png", width = 800, height = 400, res = 150)
+grid.draw(national_grob)
+dev.off()
+```
+
+
+# Changing necessary variables to factor
+```{r}
+
+airport_fare_clean$Airport <- factor(airport_fare_clean$Airport)
+airport_fare_clean$Quarter <- factor(airport_fare_clean$Quarter)
+airport_fare_clean$Year <- factor(airport_fare_clean$Year)
+
+national_fare_clean$Quarter <- factor(national_fare_clean$Quarter)
+national_fare_clean$Year <- factor(national_fare_clean$Year)
+```
+
+
+# Save as a new csv file
+```{r}
+
+write.csv(airport_fare_clean, "airport_dataclean.csv", row.names = FALSE)
+write.csv(national_fare_clean, "national_dataclean.csv", row.names = FALSE)
+```
