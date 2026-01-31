@@ -12,46 +12,65 @@ knitr::opts_chunk$set(echo = TRUE, error = TRUE)
 ```{r}
 
 DWTS_data <- read.csv("2026_MCM_Problem_C_Data.csv")
+summary(DWTS_data)
 ```
 
 
 # Eliminating missing observations
 ```{r}
 
-airport_fare_clean <- airport_fare[apply(is.na(airport_fare), MARGIN = 1, sum) == 0, ]
-national_fare_clean <- national_fare[apply(is.na(national_fare), MARGIN = 1, sum) == 0, ]
+DWTS_data_clean <- DWTS_data[apply(is.na(DWTS_data), MARGIN = 1, sum) == 0, ]
 
-# data visualization for airport_fare_clean
-airport_text <- capture.output(summary(airport_fare_clean))
-airport_grob <- grid.text(paste(airport_text, collapse = "\n"), x = 0.05, y = 0.95, just = "left")
-png("airport_output.png", width = 800, height = 400, res = 150)
-grid.draw(airport_grob)
+# Convert empty strings ("") to NA for factor/character columns
+char_cols <- sapply(DWTS_data_clean, is.character)
+DWTS_data_clean[char_cols] <- lapply(DWTS_data_clean[char_cols], function(x) {
+  x[x == ""] <- NA
+  return(x)
+})
+
+# Replace NA with "Unknown" for factor/character columns
+factor_cols <- sapply(DWTS_data_clean, function(x) is.factor(x) || is.character(x))
+DWTS_data_clean[factor_cols] <- lapply(DWTS_data_clean[factor_cols], function(x) {
+  x <- addNA(as.factor(x))                 # convert to factor and add NA as level
+  levels(x)[is.na(levels(x))] <- "Unknown" # rename NA level
+  return(x)
+})
+
+# Remove columns where all values are NA
+DWTS_data_clean <- DWTS_data_clean[, colSums(!is.na(DWTS_data_clean)) > 0]
+
+# data visualization for DWTS_data_clean
+DWTS_data_text <- capture.output(summary(DWTS_data_clean))
+DWTS_data_grob <- grid.text(paste(DWTS_data_text, collapse = "\n"), x = 0.05, y = 0.95, just = "left")
+png("DWTS_data_output.png", width = 800, height = 400, res = 150)
+grid.draw(DWTS_data_grob)
 dev.off()
 
-# data visualization for national_fare_clean
-national_text <- capture.output(summary(national_fare_clean))
-national_grob <- grid.text(paste(national_text, collapse = "\n"), x = 0.05, y = 0.95, just = "left")
-png("national_output.png", width = 800, height = 400, res = 150)
-grid.draw(national_grob)
-dev.off()
 ```
 
 
-# Changing necessary variables to factor
+# Changing necessary variables to factor and other acceptable forms
 ```{r}
 
-airport_fare_clean$Airport <- factor(airport_fare_clean$Airport)
-airport_fare_clean$Quarter <- factor(airport_fare_clean$Quarter)
-airport_fare_clean$Year <- factor(airport_fare_clean$Year)
+names(DWTS_data) <- gsub("/", "_", names(DWTS_data))
 
-national_fare_clean$Quarter <- factor(national_fare_clean$Quarter)
-national_fare_clean$Year <- factor(national_fare_clean$Year)
+DWTS_data_clean$ballroom_partner <- factor(DWTS_data_clean$ballroom_partner)
+DWTS_data_clean$celebrity_industry <- factor(DWTS_data_clean$celebrity_industry)
+DWTS_data_clean$celebrity_homestate <- factor(DWTS_data_clean$celebrity_homestate)
+DWTS_data_clean$celebrity_homecountry.region <- factor(DWTS_data_clean$celebrity_homecountry.region)
+
+DWTS_data_clean$season<- factor(DWTS_data_clean$season)
+DWTS_data_clean$results <- factor(DWTS_data_clean$results)
+DWTS_data_clean$placement <- factor(DWTS_data_clean$placement)
+
+score_cols <- grep("week.*judge.*_score", names(DWTS_data), value = TRUE)
+DWTS_data[score_cols] <- lapply(DWTS_data[score_cols], as.factor)
+
 ```
 
 
 # Save as a new csv file
 ```{r}
 
-write.csv(airport_fare_clean, "airport_dataclean.csv", row.names = FALSE)
-write.csv(national_fare_clean, "national_dataclean.csv", row.names = FALSE)
+write.csv(DWTS_data_clean, "DWTS_data_clean.csv", row.names = FALSE)
 ```
