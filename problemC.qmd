@@ -1,0 +1,299 @@
+---
+title: "problemC"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+library(tidyverse)
+```
+
+You can add options to executable code like this
+
+```{r}
+data <- read_csv(file.path("..", "Downloads", "2026_MCM_Problem_C_Data.csv"))
+```
+
+```{r}
+is.factor(data$celebrity_industry)
+# :(
+data$celebrity_industry %>% factor() %>% levels()
+
+# 1, 2, 28-34 by rank
+# 3-27 by percent
+
+
+```
+
+```{r}
+#winners_idx <- which(factor(data$placement) == 1)
+
+data_cmbsc <- subset(data,, select = c(celebrity_name, ballroom_partner, celebrity_industry, celebrity_homestate, celebrity_age_during_season, season, results, placement))
+
+#WEEK 1
+data$week1_judge3_score <- as.numeric(data$week1_judge3_score)
+data$week1_judge3_score[is.na(data$week1_judge3_score)] <- 0
+
+data$week1_judge4_score <- as.numeric(data$week1_judge4_score)
+data$week1_judge4_score[is.na(data$week1_judge4_score)] <- 0
+
+data_cmbsc$week1_cj_score <- factor(data$week1_judge1_score + data$week1_judge2_score + data$week1_judge3_score + data$week1_judge4_score)
+
+#WEEK 2
+data$week2_judge3_score <- as.numeric(data$week2_judge3_score)
+data$week2_judge3_score[is.na(data$week2_judge3_score)] <- 0
+
+data$week2_judge4_score <- as.numeric(data$week2_judge4_score)
+data$week2_judge4_score[is.na(data$week2_judge4_score)] <- 0
+
+data_cmbsc$week2_cj_score <- factor(data$week2_judge1_score + data$week2_judge2_score + data$week2_judge3_score + data$week2_judge4_score)
+
+#WEEK 3
+data$week3_judge3_score <- as.numeric(data$week3_judge3_score)
+data$week3_judge3_score[is.na(data$week3_judge3_score)] <- 0
+
+data$week3_judge4_score <- as.numeric(data$week3_judge4_score)
+data$week3_judge4_score[is.na(data$week3_judge4_score)] <- 0
+
+data_cmbsc$week3_cj_score <- factor(data$week3_judge1_score + data$week3_judge2_score + data$week3_judge3_score + data$week4_judge4_score)
+
+#WEEK 4
+data$week4_judge3_score <- as.numeric(data$week4_judge3_score)
+data$week4_judge3_score[is.na(data$week4_judge3_score)] <- 0
+
+data$week4_judge4_score <- as.numeric(data$week4_judge4_score)
+data$week4_judge4_score[is.na(data$week4_judge4_score)] <- 0
+
+data_cmbsc$week4_cj_score <- factor(data$week4_judge1_score + data$week4_judge2_score + data$week4_judge3_score + data$week4_judge4_score)
+
+#WEEK 5
+data$week5_judge1_score <- as.numeric(data$week5_judge1_score)
+data$week5_judge1_score[is.na(data$week5_judge1_score)] <- 0
+
+data$week5_judge2_score <- as.numeric(data$week5_judge2_score)
+data$week5_judge2_score[is.na(data$week5_judge2_score)] <- 0
+
+data$week5_judge3_score <- as.numeric(data$week5_judge3_score)
+data$week5_judge3_score[is.na(data$week5_judge3_score)] <- 0
+
+data$week5_judge4_score <- as.numeric(data$week5_judge4_score)
+data$week5_judge4_score[is.na(data$week5_judge4_score)] <- 0
+
+data_cmbsc$week5_cj_score <- factor(data$week5_judge1_score + data$week5_judge2_score + data$week5_judge3_score + data$week5_judge4_score)
+
+#WEEK 6
+data$week6_judge1_score <- as.numeric(data$week6_judge1_score)
+data$week6_judge1_score[is.na(data$week6_judge1_score)] <- 0
+
+data$week6_judge2_score <- as.numeric(data$week6_judge2_score)
+data$week6_judge2_score[is.na(data$week6_judge2_score)] <- 0
+
+data$week6_judge3_score <- as.numeric(data$week6_judge3_score)
+data$week6_judge3_score[is.na(data$week6_judge3_score)] <- 0
+
+data$week6_judge4_score <- as.numeric(data$week6_judge4_score)
+data$week6_judge4_score[is.na(data$week6_judge4_score)] <- 0
+
+data_cmbsc$week6_cj_score <- factor(data$week6_judge1_score + data$week6_judge2_score + data$week6_judge3_score + data$week6_judge4_score)
+
+#WEEK 7
+data$week7_judge1_score <- as.numeric(data$week7_judge1_score)
+data$week7_judge1_score[is.na(data$week7_judge1_score)] <- 0
+
+data$week7_judge2_score <- as.numeric(data$week7_judge2_score)
+data$week7_judge2_score[is.na(data$week7_judge2_score)] <- 0
+
+data$week7_judge3_score <- as.numeric(data$week7_judge3_score)
+data$week7_judge3_score[is.na(data$week7_judge3_score)] <- 0
+
+data$week7_judge4_score <- as.numeric(data$week7_judge4_score)
+data$week7_judge4_score[is.na(data$week7_judge4_score)] <- 0
+
+data_cmbsc$week7_cj_score <- factor(data$week7_judge1_score + data$week7_judge2_score + data$week7_judge3_score + data$week7_judge4_score)
+
+#WEEK 8
+data$week8_judge1_score <- as.numeric(data$week8_judge1_score)
+data$week8_judge1_score[is.na(data$week8_judge1_score)] <- 0
+
+data$week8_judge2_score <- as.numeric(data$week8_judge2_score)
+data$week8_judge2_score[is.na(data$week8_judge2_score)] <- 0
+
+data$week8_judge3_score <- as.numeric(data$week8_judge3_score)
+data$week8_judge3_score[is.na(data$week8_judge3_score)] <- 0
+
+data$week8_judge4_score <- as.numeric(data$week8_judge4_score)
+data$week8_judge4_score[is.na(data$week8_judge4_score)] <- 0
+
+data_cmbsc$week8_cj_score <- factor(data$week8_judge1_score + data$week8_judge2_score + data$week8_judge3_score + data$week8_judge4_score)
+
+#WEEK 9
+data$week9_judge1_score <- as.numeric(data$week9_judge1_score)
+data$week9_judge1_score[is.na(data$week9_judge1_score)] <- 0
+
+data$week9_judge2_score <- as.numeric(data$week9_judge2_score)
+data$week9_judge2_score[is.na(data$week9_judge2_score)] <- 0
+
+data$week9_judge3_score <- as.numeric(data$week9_judge3_score)
+data$week9_judge3_score[is.na(data$week9_judge3_score)] <- 0
+
+data$week9_judge4_score <- as.numeric(data$week9_judge4_score)
+data$week9_judge4_score[is.na(data$week9_judge4_score)] <- 0
+
+data_cmbsc$week9_cj_score <- factor(data$week9_judge1_score + data$week9_judge2_score + data$week9_judge3_score + data$week9_judge4_score)
+
+#WEEK 10
+data$week10_judge1_score <- as.numeric(data$week10_judge1_score)
+data$week10_judge1_score[is.na(data$week10_judge1_score)] <- 0
+
+data$week10_judge2_score <- as.numeric(data$week10_judge2_score)
+data$week10_judge2_score[is.na(data$week10_judge2_score)] <- 0
+
+data$week10_judge3_score <- as.numeric(data$week10_judge3_score)
+data$week10_judge3_score[is.na(data$week10_judge3_score)] <- 0
+
+data$week10_judge4_score <- as.numeric(data$week10_judge4_score)
+data$week10_judge4_score[is.na(data$week10_judge4_score)] <- 0
+
+data_cmbsc$week10_cj_score <- factor(data$week10_judge1_score + data$week10_judge2_score + data$week10_judge3_score + data$week10_judge4_score)
+
+#WEEK 11
+data$week11_judge1_score <- as.numeric(data$week11_judge1_score)
+data$week11_judge1_score[is.na(data$week11_judge1_score)] <- 0
+
+data$week11_judge2_score <- as.numeric(data$week11_judge2_score)
+data$week11_judge2_score[is.na(data$week11_judge2_score)] <- 0
+
+data$week11_judge3_score <- as.numeric(data$week11_judge3_score)
+data$week11_judge3_score[is.na(data$week11_judge3_score)] <- 0
+
+data$week11_judge4_score <- as.numeric(data$week11_judge4_score)
+data$week11_judge4_score[is.na(data$week11_judge4_score)] <- 0
+
+data_cmbsc$week11_cj_score <- factor(data$week11_judge1_score + data$week11_judge2_score + data$week11_judge3_score + data$week11_judge4_score)
+
+```
+
+```{r}
+winners <- subset(data_cmbsc, placement == 1)
+
+dwts_s1 <- subset(data_cmbsc, season == 1) #goes to week6
+dwts_s2 <- subset(data_cmbsc, season == 2) 
+dwts_s3 <- subset(data_cmbsc, season == 3)
+dwts_s4 <- subset(data_cmbsc, season == 4)
+dwts_s5 <- subset(data_cmbsc, season == 5)
+dwts_s6 <- subset(data_cmbsc, season == 6)
+dwts_s7 <- subset(data_cmbsc, season == 7)
+dwts_s8 <- subset(data_cmbsc, season == 8)
+dwts_s9 <- subset(data_cmbsc, season == 9)
+dwts_s10 <- subset(data_cmbsc, season == 10)
+dwts_s11 <- subset(data_cmbsc, season == 11)
+
+dwts_s12 <- subset(data_cmbsc, season == 12) 
+dwts_s13 <- subset(data_cmbsc, season == 13) 
+dwts_s14 <- subset(data_cmbsc, season == 14)
+dwts_s15 <- subset(data_cmbsc, season == 15)
+dwts_s16 <- subset(data_cmbsc, season == 16)
+dwts_s17 <- subset(data_cmbsc, season == 17)
+dwts_s18 <- subset(data_cmbsc, season == 18)
+dwts_s19 <- subset(data_cmbsc, season == 19)
+dwts_s20 <- subset(data_cmbsc, season == 20)
+dwts_s21 <- subset(data_cmbsc, season == 21)
+
+dwts_s22 <- subset(data_cmbsc, season == 22) 
+dwts_s23 <- subset(data_cmbsc, season == 23)
+dwts_s24 <- subset(data_cmbsc, season == 24)
+dwts_s25 <- subset(data_cmbsc, season == 25)
+dwts_s26 <- subset(data_cmbsc, season == 26)
+dwts_s27 <- subset(data_cmbsc, season == 27)
+dwts_s28 <- subset(data_cmbsc, season == 28)
+dwts_s29 <- subset(data_cmbsc, season == 29)
+dwts_s30 <- subset(data_cmbsc, season == 30)
+dwts_s31 <- subset(data_cmbsc, season == 31)
+dwts_s32 <- subset(data_cmbsc, season == 32)
+dwts_s33 <- subset(data_cmbsc, season == 33)
+dwts_s34 <- subset(data_cmbsc, season == 34)
+```
+
+```{r}
+#s1 goes to week6
+dwts_s1_s <- dwts_s1 %>% select(-week7_cj_score, -week8_cj_score, -week9_cj_score, -week10_cj_score, -week11_cj_score) 
+
+#s2 goes to week8
+dwts_s2_s <- dwts_s2 %>% select(-week9_cj_score, -week10_cj_score, -week11_cj_score) 
+
+#s3-7 go to week10
+dwts_s3_s <- dwts_s3 %>% select(-week11_cj_score)
+dwts_s4_s <- dwts_s4 %>% select(-week11_cj_score)
+dwts_s5_s <- dwts_s5 %>% select(-week11_cj_score)
+dwts_s6_s <- dwts_s6 %>% select(-week11_cj_score)
+dwts_s7_s <- dwts_s7 %>% select(-week11_cj_score)
+
+#s8 goes to week11
+dwts_s8_s <- dwts_s8
+
+#s9-16 go to week10
+dwts_s9_s <- dwts_s9 %>% select(-week11_cj_score)
+dwts_s10_s <- dwts_s10 %>% select(-week11_cj_score)
+dwts_s11_s <- dwts_s11 %>% select(-week11_cj_score)
+dwts_s12_s <- dwts_s12 %>% select(-week11_cj_score)
+dwts_s13_s <- dwts_s13 %>% select(-week11_cj_score)
+dwts_s14_s <- dwts_s14 %>% select(-week11_cj_score)
+dwts_s15_s <- dwts_s15 %>% select(-week11_cj_score)
+dwts_s16_s <- dwts_s16 %>% select(-week11_cj_score)
+
+#s17 goes to week11
+dwts_s17_s <- dwts_s17
+
+#s18 goes to week10
+dwts_s18_s <- dwts_s18 %>% select(-week11_cj_score)
+
+#s19 goes to week11
+dwts_s19_s <- dwts_s19
+
+#s20 goes to week10
+dwts_s20_s <- dwts_s20 %>% select(-week11_cj_score)
+
+#s21 goes to week11
+dwts_s21_s <- dwts_s21
+
+#s22 goes to week10
+dwts_s22_s <- dwts_s22 %>% select(-week11_cj_score) 
+
+#s23 goes to week11
+dwts_s23_s <- dwts_s23
+
+#s24-25 go to week10
+dwts_s24_s <- dwts_s24 %>% select(-week11_cj_score) 
+dwts_s25_s <- dwts_s25 %>% select(-week11_cj_score) 
+
+#s26 goes to week4
+dwts_s26_s <- dwts_s26 %>% select(-week5_cj_score, -week6_cj_score, -week7_cj_score, -week8_cj_score, -week9_cj_score, -week10_cj_score, -week11_cj_score) 
+
+#s27 goes to week9
+dwts_s27_s <- dwts_s27 %>% select(-week10_cj_score, -week11_cj_score) 
+
+#s28-29 go to week11
+dwts_s28_s <- dwts_s28
+dwts_s29_s <- dwts_s29
+
+#s30-31 go to week10
+dwts_s30_s <- dwts_s30 %>% select(-week11_cj_score) 
+dwts_s31_s <- dwts_s31 %>% select(-week11_cj_score) 
+
+#s32 goes to week11
+dwts_s32_s <- dwts_s32
+
+#s33 goes to week9
+dwts_s33_s <- dwts_s33 %>% select(-week10_cj_score, -week11_cj_score) 
+
+#s34 goes to week11
+dwts_s34_s <- dwts_s34
+```
